@@ -4,15 +4,16 @@ import 'db/todo_db.dart';
 import 'todo_add.dart';
 import 'todo_detail.dart';
 import 'todo_list.dart';
+import 'todo_edit.dart';
+
+// 1.openDatabaseした変数を、クラスのプロパティとして使い続ける
+// 2.データベースから取得したデータを表示するためのFlutterProviderを設置
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await TodoItemDatabase().initDatabase();
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  await TodoItemDatabase().initDatabase(); //データベースに接続
+  // await TodoItemDatabase().delete();
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const TodoListPage(),
         '/add': (context) => const TodoAddPage(),
         '/detail': (context) => const TodoDetailPage(),
+        '/edit': (context) => const TodoEditPage(),
       },
     );
   }

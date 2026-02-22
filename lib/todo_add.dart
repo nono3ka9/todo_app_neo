@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'db/todo_db.dart';
 import 'providers/todo_item_db.dart';
 
@@ -11,10 +12,19 @@ class TodoAddPage extends ConsumerStatefulWidget {
 }
 
 class TodoAddPageState extends ConsumerState<TodoAddPage> {
+  int? selectedValue = 1; // プライオリティの初期値
   final formKey = GlobalKey<FormState>(); // フォーム共通キー
   final titleFormKey = GlobalKey<FormFieldState<String>>(); // タイトルフォームキー
   final contentFormKey = GlobalKey<FormFieldState<String>>(); // 内容フォームキー
   // フォームキーを使って、バリデーションを実行できたり、フォームの入力値を参照できたりする
+
+  final deadlineController = TextEditingController();
+
+  @override
+  void dispose() {
+    deadlineController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +44,11 @@ class TodoAddPageState extends ConsumerState<TodoAddPage> {
                 padding: EdgeInsets.only(bottom: 48),
                 child: TextFormField(
                   key: titleFormKey, // キーを設定
-                  decoration: const InputDecoration(
-                    labelText: 'タイトル',
-                  ),
+                  decoration: const InputDecoration(labelText: 'タイトル'),
                   validator: (value) {
                     if (value == null || value.trim() == '') {
                       return '入力してください';
-                    }
-                    else if (value.length > 30) {
+                    } else if (value.length > 30) {
                       return 'タイトルは30文字以下でなければなりません';
                     }
                     return null;
@@ -56,7 +63,7 @@ class TodoAddPageState extends ConsumerState<TodoAddPage> {
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: '内容',
-                    alignLabelWithHint: true
+                    alignLabelWithHint: true,
                   ),
                   minLines: 8,
                   maxLines: 8,
@@ -68,26 +75,73 @@ class TodoAddPageState extends ConsumerState<TodoAddPage> {
                   },
                 ),
               ),
+              RadioGroup(
+                groupValue: selectedValue,
+                onChanged: (int? value) {
+                  setState(() {
+                    selectedValue = value;
+                  });
+                },
+                child: Column(
+                  children: [
+                    ListTile(title: Text('高'), leading: Radio(value: 0)),
+                    ListTile(title: Text('中'), leading: Radio(value: 1)),
+                    ListTile(title: Text('低'), leading: Radio(value: 2)),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: 300,
+                child: TextFormField(
+                  controller: deadlineController,
+                  readOnly: true,
+                  decoration: const InputDecoration(labelText: 'Deadline'),
+                  onTap: () async {
+                    FocusScope.of(
+                      context,
+                    ).requestFocus(FocusNode()); // キーボードを非表示
+                    final selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2022),
+                      lastDate: DateTime(2100),
+                    );
+                    if (selectedDate != null) {
+                      deadlineController.text = DateFormat(
+                        'yyyy-MM-dd',
+                      ).format(selectedDate);
+                    }
+                  },
+                ),
+              ),
               SizedBox(
                 width: 300,
                 child: ElevatedButton(
                   onPressed: () async {
                     if (formKey.currentState!.validate()) {
+                      // ユーザーがタイトルフォームで入力した値
                       final title = titleFormKey.currentState?.value ?? '';
+                      // ユーザーが内容フォームで入力した値
                       final content = contentFormKey.currentState?.value ?? '';
-                      await TodoItemDatabase().insertTodoItem(title, content);
+                      final deadline = deadlineController.text;
+                      await TodoItemDatabase().insertTodoItem(
+                        title,
+                        content,
+                        selectedValue,
+                        deadline,
+                      );
                       ref.refresh(todoProvider);
                       if (context.mounted) {
                         Navigator.of(context).pop();
                       }
                     }
                   },
-                  child: Text('Todoを追加')
+                  child: Text('Todoを追加'),
                 ),
-              )
+              ),
             ],
           ),
-        )
+        ),
       ),
     );
   }
