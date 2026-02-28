@@ -29,6 +29,16 @@ class _TodoEditPageState extends ConsumerState<TodoEditPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final todo = ModalRoute.of(context)!.settings.arguments as TodoItem;
+    selectedValue = todo.priority;
+    deadlineController.text = deadlineController.text = DateFormat(
+      'yyyy-MM-dd',
+    ).format(todo.deadline);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final todo = ModalRoute.of(context)!.settings.arguments as TodoItem;
     return Scaffold(

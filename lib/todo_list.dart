@@ -27,6 +27,15 @@ class TodoListPageState extends ConsumerState {
             'Todo 一覧（完了済み${data.where((todo) => todo.isCompleted).length}/${data.length}）',
           ),
         ),
+
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/calendar');
+            },
+            icon: Icon(Icons.calendar_month),
+          ),
+        ],
       ),
       body: allTodoAsync.when(
         loading: () => CircularProgressIndicator(),

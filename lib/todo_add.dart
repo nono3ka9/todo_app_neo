@@ -82,16 +82,60 @@ class TodoAddPageState extends ConsumerState<TodoAddPage> {
                     selectedValue = value;
                   });
                 },
-                child: Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    ListTile(title: Text('高'), leading: Radio(value: 0)),
-                    ListTile(title: Text('中'), leading: Radio(value: 1)),
-                    ListTile(title: Text('低'), leading: Radio(value: 2)),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<int>(
+                          value: 0,
+                          groupValue: selectedValue,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedValue = value;
+                            });
+                          },
+                        ),
+                        const Text('高'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<int>(
+                          value: 1,
+                          groupValue: selectedValue,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedValue = value;
+                            });
+                          },
+                        ),
+                        const Text('中'),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Radio<int>(
+                          value: 2,
+                          groupValue: selectedValue,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedValue = value;
+                            });
+                          },
+                        ),
+                        const Text('低'),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              SizedBox(
+              Container(
                 width: 300,
+                padding: EdgeInsets.only(bottom: 12),
                 child: TextFormField(
                   controller: deadlineController,
                   readOnly: true,

@@ -10,6 +10,10 @@ class TodoItemDatabase {
 
   late final Database database;
 
+  Future<void> deleteTodoItem(int id) async {
+    await database.delete('TodoItem', where: 'id = ?', whereArgs: [id]);
+  }
+
   Future<Database> initDatabase() async {
     const scripts = {
       1: [

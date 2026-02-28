@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'db/todo_db.dart';
 import 'todo_add.dart';
+import 'calendar.dart';
 import 'todo_detail.dart';
 import 'todo_list.dart';
 import 'todo_edit.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         '/add': (context) => const TodoAddPage(),
         '/detail': (context) => const TodoDetailPage(),
         '/edit': (context) => const TodoEditPage(),
+        '/calendar': (context) => const CalendarPage(),
       },
     );
   }

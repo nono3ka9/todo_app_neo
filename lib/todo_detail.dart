@@ -18,7 +18,46 @@ class TodoDetailPage extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Todo 詳細'),
+
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () async {
+              final result = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('削除確認'),
+                  content: const Text('このTodoを削除しますか？'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('キャンセル'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text(
+                        '削除',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
+              if (result == true) {
+                await TodoItemDatabase().deleteTodoItem(todoId);
+
+                ref.refresh(todoProvider);
+
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              }
+            },
+          ),
+        ],
       ),
+
       body: todoAsync.when(
         loading: () => CircularProgressIndicator(),
         error: (error, stackTrace) => Text('$error'),
