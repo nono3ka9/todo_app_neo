@@ -6,6 +6,8 @@ import 'calendar.dart';
 import 'todo_detail.dart';
 import 'todo_list.dart';
 import 'todo_edit.dart';
+import 'services/notification.dart';
+import 'services/notification_repeat.dart';
 
 // 1.openDatabaseした変数を、クラスのプロパティとして使い続ける
 // 2.データベースから取得したデータを表示するためのFlutterProviderを設置
@@ -15,6 +17,8 @@ void main() async {
   await TodoItemDatabase().initDatabase(); //データベースに接続
   // await TodoItemDatabase().delete();
   runApp(const ProviderScope(child: MyApp()));
+  await notify();
+  await repeatingNotify();
 }
 
 class MyApp extends StatelessWidget {
