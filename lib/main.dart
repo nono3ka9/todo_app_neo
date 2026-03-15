@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'db/todo_db.dart';
+import 'services/notification_schedule.dart';
 import 'todo_add.dart';
 import 'calendar.dart';
 import 'todo_detail.dart';
@@ -8,6 +9,7 @@ import 'todo_list.dart';
 import 'todo_edit.dart';
 import 'services/notification.dart';
 import 'services/notification_repeat.dart';
+import 'services/notification_deadline.dart';
 
 // 1.openDatabaseした変数を、クラスのプロパティとして使い続ける
 // 2.データベースから取得したデータを表示するためのFlutterProviderを設置
@@ -16,9 +18,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await TodoItemDatabase().initDatabase(); //データベースに接続
   // await TodoItemDatabase().delete();
+  await NotificationSchedule().initFlnp();
   runApp(const ProviderScope(child: MyApp()));
-  await notify();
+  // await notify();
   await repeatingNotify();
+  await deadlineNotify();
 }
 
 class MyApp extends StatelessWidget {

@@ -73,14 +73,23 @@ class TodoItemDatabase {
     );
   }
 
+  Future<List<String>> getTodoTitlesByDeadline(String deadline) async {
+    final List<Map<String, dynamic>> rows = await database.query(
+      'TodoItem',
+      where: 'deadline = ?',
+      whereArgs: [deadline],
+    );
+    return rows.map((todo) => todo['title'] as String).toList();
+  }
+
   //データベースにTodoを追加する
-  Future<void> insertTodoItem(
+  Future<int> insertTodoItem(
     String title,
     String content,
     int? priority,
     String deadline,
   ) async {
-    await database.insert('TodoItem', {
+    return await database.insert('TodoItem', {
       'title': title,
       'content': content,
       'isCompleted': 0,

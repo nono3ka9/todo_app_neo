@@ -31,7 +31,7 @@ Future<void> repeatingNotify() async {
   //   androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
   // );
 
-  // await flnp.cancel(id: 2);
+  await flnp.cancelAll();
 
   // OSに、「repeating_channel_id」の枠組みで、通知するよう指示を出す
   // スケジュールで管理されてる間は、cancelしない限り通知が鳴り続ける

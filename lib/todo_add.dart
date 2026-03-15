@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'db/todo_db.dart';
 import 'providers/todo_item_db.dart';
+import 'services/notification_schedule.dart';
 
 class TodoAddPage extends ConsumerStatefulWidget {
   const TodoAddPage({super.key});
@@ -168,11 +169,16 @@ class TodoAddPageState extends ConsumerState<TodoAddPage> {
                       // ユーザーが内容フォームで入力した値
                       final content = contentFormKey.currentState?.value ?? '';
                       final deadline = deadlineController.text;
-                      await TodoItemDatabase().insertTodoItem(
+                      final id = await TodoItemDatabase().insertTodoItem(
                         title,
                         content,
                         selectedValue,
                         deadline,
+                      );
+                      await NotificationSchedule().schedule(
+                        id,
+                        deadline,
+                        title,
                       );
                       ref.refresh(todoProvider);
                       if (context.mounted) {
